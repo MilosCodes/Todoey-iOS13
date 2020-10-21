@@ -23,7 +23,7 @@ class TodoListViewController: UITableViewController {
 
       print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist"))
 
-//      loadiItems()
+      loadiItems()
     }
   //MARK: -tableView Data Source methods
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -45,9 +45,13 @@ class TodoListViewController: UITableViewController {
   //MARK: -tableViewDelegate methods
 
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    print(itemArray[indexPath.row])
+
+//    itemArray[indexPath.row].setValue("Completed", forKey: "title")
+
     itemArray[indexPath.row].done = !itemArray[indexPath.row].done
+
     tableView.deselectRow(at: indexPath, animated: true)
+
     saveItems()
 
   }
@@ -84,16 +88,14 @@ class TodoListViewController: UITableViewController {
 
   }
 
-//  func loadiItems() {
-//
-//    if let data = try? Data(contentsOf: dataFilePath!) {
-//      let decoder = PropertyListDecoder()
-//      do {
-//      itemArray = try decoder.decode([Item].self, from: data)
-//      } catch {
-//        print("error accured \(error)")
-//      }
-//    }
-//  }
+  func loadiItems() {
+
+    let request: NSFetchRequest<Item> = Item.fetchRequest()
+    do {
+      itemArray = try context.fetch(request)
+    } catch {
+      print("Error fetching data from context \(error)")
+    }
+  }
 }
 
